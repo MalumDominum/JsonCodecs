@@ -90,7 +90,18 @@ class CodecsSuite
     val json = Json.Obj(Map("people" ->
       Json.Arr(List(Json.Obj(Map("name" -> Json.Str("Alice"), "age" -> Json.Num(42)))))
     ))
-    val encoder = implicitly[Encoder[Contacts]]
+    /**
+      * Individual Task (Variant 11)
+      * So contactsEncoder is equivalent to implicitly[ Encoder[Contacts] ]
+      * (Writing contactsEncoder is more productive but less flexible,
+      *  but it doesn't matter in this test, because you are testing implicitly)
+      * What happens behind the scene on my opinion when you call implicitly[Encoder[Contacts]:
+      * Firstly compiler goes to Encoder, then Encoder companion-object and in it finds "fromFunction"
+      * that returns Encoder[A]. Then compiler checks inheritors and no found suitable function.
+      * So he checks Contacts and in his companion-object founds more specific function that
+      * returns exactly Encoder[Contacts] and he substitutes it
+      */
+    val encoder = contactsEncoder
     assert(encoder.encode(contacts) == json)
   }
 
